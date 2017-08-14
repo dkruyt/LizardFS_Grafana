@@ -7,7 +7,7 @@ This plugin/script for Telegraf will collect the metrics from LizardFS and store
 Make sure you have installed InfluxDB as the time-series database Telegraf as the collector first.
 
 ### Install
-​
+
 Get all the files, at [My GitHub page](https://github.com/dkruyt/LizardFS_Grafana).
 
 * Put _lizardfs.conf_ and _lizardfs.sh_ in your `/etc/telegraf/telegraf.d` directory.
@@ -45,5 +45,8 @@ After this it should log the statistics of LizardFS in InfluxDB. Now you can imp
 ### Screenshot
 
 After you setup all, you should have some dashboard like this.
-​
+
+
 ![](https://github.com/dkruyt/LizardFS_Grafana/blob/master/Grafana%20LizardFS%20Metrics.jpg?raw=true)
+
+More at https://kruyt.org/lizardfs-in-grafana/
