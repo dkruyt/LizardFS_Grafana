@@ -1,159 +1,49 @@
-# LizardFS_Grafana
-LizardFS statistics in grafana via Telegraf and InfluxDB
+## LizardFS Metrics in Grafana
+
+This plugin/script for Telegraf will collect the metrics from LizardFS and stores it into InfluxDB, then you can view your metrics in Grafana on a templated dashboard.
+ 
+### Pre install
+
+Make sure you have installed InfluxDB as the time-series database Telegraf as the collector first.
+
+### Install
+​
+Get all the files, at [My GitHub page](https://github.com/dkruyt/LizardFS_Grafana).
+
+* Put _lizardfs.conf_ and _lizardfs.sh_ in your `/etc/telegraf/telegraf.d` directory.
+* Edit the file _lizardfs.sh_ and change LFSADMIN variable as appropriate for your _lizardfs-admin_ binary.
+* Edit the file _lizardfs.sh_ and change the LIZARDHOSTS to your lizardmaster, you can add multple liardclusters here as needed.
+
+### Test
+test with:
+```
+telegraf --test --config /etc/telegraf/telegraf.d/lizardfs.conf
+```
+It should produce some thing like this:
+```
+* Plugin: inputs.exec, Collection 1
+> zswap,host=birdofprey > lizard_info,lizardmaster=192.168.0.1,host=lxh-sysa-005 FS_objects=470118,Directories=36961,Files=432583,Memory_usage=198946816,Total_space=37159571947520,Available_space=22595288821760,Trash_files=0,Chunk_copies=643179,Regular_copies_deprecated=643179,Trash_space=0,Reserved_space=0,Reserved_files=0,Chunks=214393 1502747150000000000
+> lizard_ready-chunkservers-count,lizardmaster=192.168.0.1,host=lxh-sysa-005 chunkservers-count=10 1502747150000000000
+> lizard_chunks-health,state=AVA,goal=1,host=lxh-sysa-005,lizardmaster=192.168.0.1 safe=0,unsafe=0,lost=0 1502747150000000000
+> lizard_chunks-health,goal=2,host=lxh-sysa-005,lizardmaster=192.168.0.1,state=AVA unsafe=0,lost=0,safe=0 1502747150000000000
+> lizard_chunks-health,lizardmaster=192.168.0.1,state=AVA,goal=3,host=lxh-sysa-005 unsafe=0,lost=0,safe=214393 1502747150000000000
+
+***snip***
+
+ lizard_disks,lizardmaster=192.168.0.1,chunkserver=192.168.174.63:9533,path=/data/1/data/3.10.4/,host=lxh-sysa-005 max_fsync_time=0,used_space=705392361472,chunks=32392,read_bytes=0,max_write_time=0,read_ops=0,fsync_ops=0,to_delete="no",damaged="no",scanning="no",written_bytes=0,max_read_time=0,last_error="0",total_space=1857978597376,write_ops=0 1502747150000000000
+```
+
+### Reestart telegraf
+execute:
 
 ```
-lizard_info,lizardmaster=192.0.0.1 Memory_usage=68554752,Total_space=37159571947520,Available_space=22595291947008,Trash_space=0,Trash_files=0,Reserved_space=0,Reserved_files=0,FS_objects=36,Directories=14,Files=22,Chunks=270,Chunk_copies=810,Regular_copies_deprecated=810
-lizard_ready-chunkservers-count,lizardmaster=192.0.0.1 chunkservers-count=10
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=1 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=2 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=3 safe=270,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=4 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=5 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=6 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=7 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=8 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=once safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=10 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=11 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=12 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=13 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=14 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=15 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=16 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=17 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=18 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=19 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=20 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=21 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=22 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=23 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=24 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=25 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=26 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=27 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=28 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=29 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=30 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=31 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=32 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=33 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=34 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=35 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=36 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=37 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=38 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=39 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=AVA,goal=40 safe=0,unsafe=0,lost=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=1 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=2 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=3 0=270,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=4 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=5 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=6 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=7 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=8 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=once 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=10 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=11 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=12 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=13 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=14 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=15 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=16 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=17 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=18 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=19 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=20 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=21 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=22 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=23 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=24 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=25 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=26 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=27 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=28 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=29 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=30 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=31 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=32 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=33 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=34 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=35 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=36 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=37 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=38 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=39 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=REP,goal=40 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=1 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=2 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=3 0=270,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=4 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=5 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=6 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=7 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=8 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=once 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=10 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=11 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=12 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=13 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=14 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=15 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=16 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=17 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=18 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=19 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=20 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=21 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=22 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=23 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=24 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=25 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=26 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=27 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=28 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=29 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=30 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=31 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=32 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=33 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=34 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=35 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=36 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=37 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=38 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=39 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunks-health,lizardmaster=192.0.0.1,state=DEL,goal=40 0=0,1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0,9=0,10+=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.93.250:9503 version="3.10.4",chunks=4,used_space=1542704705536,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.25.83:9503 version="3.10.4",chunks=142,used_space=1541475893248,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.39.141:9503 version="3.10.4",chunks=3,used_space=1543875772416,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.124.222:9503 version="3.10.4",chunks=211,used_space=1172886499328,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.129.119:9503 version="3.10.4",chunks=142,used_space=1354409029632,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.231.119:9503 version="3.10.4",chunks=4,used_space=1399807930368,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.227.153:9503 version="3.10.4",chunks=50,used_space=1543877070848,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.85.161:9503 version="3.10.4",chunks=90,used_space=1543530139648,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.171.17:9503 version="3.10.4",chunks=4,used_space=1510249254912,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_chunkservers,lizardmaster=192.0.0.1,server=192.0.174.63:9503 version="3.10.4",chunks=160,used_space=1411463704576,total_space=3715957194752,chunks_marked_removal=0,usedspace_marked_removal=0,usedspace_marked_removal_total=0,errors=0
-lizard_metadataservers,lizardmaster=192.0.0.1,hostname=lxd-mv-646206ee ip="192.0.0.1",port=9421,personality="master",status="running",metadata_version=57574,version="3.10.4"
-lizard_metadataservers,lizardmaster=192.0.0.1,hostname=lz-repo-mst-2 ip="192.0.97.136",port=9502,personality="shadow",status="connected",metadata_version=57574,version="3.10.4"
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.93.250:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=771178717184,chunks=2,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.93.250:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=771525988352,chunks=2,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.25.83:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=770207285248,chunks=73,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.25.83:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=771268608000,chunks=69,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.39.141:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=771344396288,chunks=2,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.39.141:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=772531376128,chunks=1,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.124.222:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=586822877184,chunks=105,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.124.222:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=586063622144,chunks=106,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.129.119:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=678198247424,chunks=69,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.129.119:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=676210782208,chunks=73,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.231.119:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=699509354496,chunks=2,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.231.119:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=700298575872,chunks=2,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.227.153:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=772162473984,chunks=28,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.227.153:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=771714596864,chunks=22,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.85.161:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=770892779520,chunks=36,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.85.161:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=772637360128,chunks=54,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.171.17:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=754989924352,chunks=2,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.171.17:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=755259330192.,chunks=2,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.174.63:9503,path=/data/2/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=706071343104,chunks=86,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
-lizard_disks,lizardmaster=192.0.0.1,chunkserver=192.0.174.63:9503,path=/data/1/repo/3.10.4/ to_delete="no",damaged="no",scanning="no",last_error="0",total_space=1857978597376,used_space=705392361472,chunks=74,read_bytes=0,written_bytes=0,max_read_time=0,max_write_time=0,max_fsync_time=0,read_ops=0,write_ops=0,fsync_ops=0
+service telegraf restart
 ```
+
+After this it should log the statistics of LizardFS in InfluxDB. Now you can import the dashboard for LizardFS in Grafana.
+
+### Screenshot
+
+After you setup all, you should have some dashboard like this.
+​
+![](https://github.com/dkruyt/LizardFS_Grafana/blob/master/Grafana%20LizardFS%20Metrics.jpg?raw=true)
