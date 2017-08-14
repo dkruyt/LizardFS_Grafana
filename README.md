@@ -33,7 +33,7 @@ It should produce some thing like this:
  lizard_disks,lizardmaster=192.168.0.1,chunkserver=192.168.174.63:9533,path=/data/1/data/3.10.4/,host=lxh-sysa-005 max_fsync_time=0,used_space=705392361472,chunks=32392,read_bytes=0,max_write_time=0,read_ops=0,fsync_ops=0,to_delete="no",damaged="no",scanning="no",written_bytes=0,max_read_time=0,last_error="0",total_space=1857978597376,write_ops=0 1502747150000000000
 ```
 
-### Reestart telegraf
+### Restart telegraf
 execute:
 
 ```
