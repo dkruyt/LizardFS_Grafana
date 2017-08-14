@@ -22,7 +22,7 @@ telegraf --test --config /etc/telegraf/telegraf.d/lizardfs.conf
 It should produce some thing like this:
 ```
 * Plugin: inputs.exec, Collection 1
-> zswap,host=birdofprey > lizard_info,lizardmaster=192.168.0.1,host=lxh-sysa-005 FS_objects=470118,Directories=36961,Files=432583,Memory_usage=198946816,Total_space=37159571947520,Available_space=22595288821760,Trash_files=0,Chunk_copies=643179,Regular_copies_deprecated=643179,Trash_space=0,Reserved_space=0,Reserved_files=0,Chunks=214393 1502747150000000000
+> lizard_info,lizardmaster=192.168.0.1,host=lxh-sysa-005 FS_objects=470118,Directories=36961,Files=432583,Memory_usage=198946816,Total_space=37159571947520,Available_space=22595288821760,Trash_files=0,Chunk_copies=643179,Regular_copies_deprecated=643179,Trash_space=0,Reserved_space=0,Reserved_files=0,Chunks=214393 1502747150000000000
 > lizard_ready-chunkservers-count,lizardmaster=192.168.0.1,host=lxh-sysa-005 chunkservers-count=10 1502747150000000000
 > lizard_chunks-health,state=AVA,goal=1,host=lxh-sysa-005,lizardmaster=192.168.0.1 safe=0,unsafe=0,lost=0 1502747150000000000
 > lizard_chunks-health,goal=2,host=lxh-sysa-005,lizardmaster=192.168.0.1,state=AVA unsafe=0,lost=0,safe=0 1502747150000000000
